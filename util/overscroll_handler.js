@@ -52,7 +52,7 @@ function OverscrollHandler(scroller, listener, onPositionUpdate) {
 
     // If this is the first touchmove, or if we're scrolling reset the touch move origin.
     if (!seenTouchMove || scrollPosition !== 0) {
-      reset_touch_move_base(y);
+      reset_touch_move_base(y - self.getTouchPosition());
       newTouchPosition = -touchBase - y;
     }
 
@@ -167,7 +167,7 @@ function OverscrollHandler(scroller, listener, onPositionUpdate) {
       endFling(ms);
     }
 
-    if(pendingFling || (!flingCurve && scrollPosition === 0 && touchPosition > 0)) {
+    if(pendingFling /*|| (!flingCurve && scrollPosition === 0 && touchPosition > 0)*/) {
       var velocity = velocityCalculator.getVelocity(ms);
 //      console.log("velocity " + velocity);
       // Use the last RAF timestamp, so we can predict the location this frame.
@@ -183,6 +183,7 @@ function OverscrollHandler(scroller, listener, onPositionUpdate) {
       pendingFling = false;
       position = self.getPosition(ms);
       if (self.onFlingIn) {
+        console.log("TOUCHPOSITION " + touchPosition);
         console.log("HAVE FLING IN " + velocity);
         self.onFlingIn(velocity / 1000);
       }

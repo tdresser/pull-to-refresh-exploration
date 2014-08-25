@@ -28,8 +28,8 @@ function VelocityCalculator(bufferSize) {
     var newestPosition = data[data.length - 1][1];
     for (var i = 0; i < data.length; ++i) {
       usable_data.push([newestTime - data[i][0], newestPosition - data[i][1]]);
-      console.log("Position\t", newestPosition - data[i][1]);
-      console.log("Time\t", newestTime - data[i][0]);
+//      console.log("Position\t", newestPosition - data[i][1]);
+//      console.log("Time\t", newestTime - data[i][0]);
     }
 
     var regression_result = window.regression('polynomial', usable_data);
@@ -41,7 +41,7 @@ function VelocityCalculator(bufferSize) {
     if (isNaN(result)) {
       return 0;
     }
-    console.log("VELOCITY IS " + result);
+//    console.log("VELOCITY IS " + result);
     return result;
   }
 };

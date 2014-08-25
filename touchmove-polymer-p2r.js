@@ -15,6 +15,7 @@ function OverscrollPhysics(max_offset) {
   var fling_time = null;
 
   this.setTarget = function(t) {
+    console.log("SET TARGET " + t);
     target = t;
     v = 0;
     fling_time = null;
@@ -185,13 +186,15 @@ Polymer('polymer-p2r', {
     function finishLoading() {
       setHeaderClassName('');
       if (isP2rVisible() && fingersDown == 0) {
+        console.log("SET TARGET TO " + Math.max(0, scroller.scrollTop));
         overscrollPhysics.setTarget(Math.max(0, scroller.scrollTop));
       }
     }
 
     function onFlingIn(velocity) {
+      console.log("SET TARGET TO " + 0);
       overscrollPhysics.setTarget(0);
-      overscrollPhysics.setVelocity(velocity);
+      overscrollPhysics.setVelocity(-velocity);
     }
 
     scroller.addEventListener('touchcancel', finishPull);
