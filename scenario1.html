@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Pull to Refresh Using touchmove events</title>
+  <meta name="viewport" content="width=device-width, user-scalable=no">
+
+<style>
+* {
+  margin:0px;
+  padding:0px;
+}
+
+html, body {
+  width:100%;
+}
+
+#header {
+  background-color: lightgrey;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  height:800px;
+  text-align:center;
+  padding-top:750px;
+  width: 100%;
+}
+
+#container {
+  width:600px;
+  overflow:scroll;
+  height:600px;
+}
+
+#content {
+  height:1500;
+  width:100%;
+}
+
+#scrollable {
+  width:1px;
+  position:absolute;
+  height:2300px;
+}
+
+#container::-webkit-scrollbar { width: 0 !important }
+
+.overscrolling > #header {
+  position:fixed;
+  top:-800px;
+}
+
+.overscrolling > #content {
+  position:fixed;
+  top:0px;
+}
+
+#header::after {
+  content: 'Pull down to refresh...';
+}
+
+#header.pulled::after {
+  content: 'Release to refresh...';
+}
+
+/* Content styling */
+.row {
+  height: 50px;
+  width: 100%;
+}
+.even {
+  background-color: lightblue;
+}
+.odd {
+  background-color: white;
+}
+
+#vertical {
+  height:150px;
+  width:100%;
+  overflow:scroll;
+}
+
+#big {
+  height:500px;
+}
+
+</style>
+</head>
+<body>
+  <div id="scrollable"></div>
+  <div id="header"></div>
+  <div id="content">
+    <div class='row odd'>1</div>
+    <div class='row even'>2</div>
+    <div class='row odd'>3</div>
+    <div class='row even'>4</div>
+    <div class='row odd'>5</div>
+    <div class='row even'>6</div>
+    <div id="vertical"> <div id="big"></div></div>
+    <div class='row odd'>7</div>
+    <div class='row even'>8</div>
+    <div class='row odd'>9</div>
+    <div class='row even'>10</div>
+    <div class='row odd'>11</div>
+    <div class='row even'>12</div>
+    <div class='row odd'>13</div>
+    <div class='row even'>14</div>
+    <div class='row odd'>15</div>
+    <div class='row even'>16</div>
+    <div class='row odd'>17</div>
+    <div class='row even'>18</div>
+    <div class='row odd'>19</div>
+    <div class='row even'>20</div>
+    <div class='row odd'>21</div>
+    <div class='row even'>22</div>
+    <div class='row odd'>23</div>
+    <div class='row even'>24</div>
+    <div class='row odd'>25</div>
+    <div class='row even'>26</div>
+    <div class='row odd'>27</div>
+  </div>
+<script>
+var headerSize = 800;
+var overscrolling = false;
+
+var container = document.body;
+var header = document.getElementById("header");
+var content = document.getElementById("content");
+var fingersDown = 0;
+
+// Used for fake (and terrible) physics.
+var t = 0.1;
+
+var lastOffsetPreFriction = 0;
+
+function addFriction(x) {
+  if (x < 0)
+    return x;
+  x = x / 800;
+  return 800 * x / (1 + x*0.8);
+}
+
+function overscrollOn() {
+  container.className = "overscrolling";
+  overscrolling = true;
+  window.requestAnimationFrame(updateOverscroll);
+}
+
+function setHeaderOffset(y) {
+  var transform = 'translate3d(0, ' + y + 'px, 0)';
+  header.style.webkitTransform = transform;
+  content.style.webkitTransform = transform;
+}
+
+function overscrollOff() {
+  container.className = "";
+  overscrolling = false;
+  setHeaderOffset(0);
+}
+
+function updateOverscroll() {
+  var scrollTop = container.scrollTop;
+  if (!overscrolling || scrollTop >= headerSize)
+    return;
+
+  var offset = 0;
+  if (fingersDown === 0) {
+   offset = 800 - scrollTop - t;
+  } else
+    offset = 800 - scrollTop;
+  lastOffsetPreFriction = offset;
+  offset = addFriction(offset);
+
+  if (offset <= 0) {
+    t = 0.1;
+    container.scrollTop = headerSize;
+    overscrollOff();
+    return;
+  } else {
+    window.requestAnimationFrame(updateOverscroll);
+  }
+
+  if (offset > 110 && fingersDown) {
+    header.className = "pulled";
+  } else {
+    header.className = "";
+  }
+
+  if ( t < 120)
+    t*=1.2;
+  else
+    t+= 120*1.2 - 120;
+  setHeaderOffset(offset);
+}
+
+document.addEventListener("scroll", function(e) {
+  var scrollTop = container.scrollTop;
+
+  if (!overscrolling && scrollTop < headerSize)
+    overscrollOn();
+  else if (overscrolling && scrollTop >= headerSize)
+    overscrollOff();
+});
+
+document.addEventListener("touchstart", function(e) {
+  fingersDown++;
+  if (overscrolling) {
+    t = 0;
+    container.scrollTop = 800 - lastOffsetPreFriction;
+    setHeaderOffset(0);
+  }
+});
+
+document.addEventListener("touchend", function(e) {
+  fingersDown--;
+  t = 0.1;
+});
+
+document.addEventListener("touchcancel", function(e) {
+  fingersDown--;
+  t = 0.1;
+});
+
+window.onload = function(){
+  container.scrollTop = headerSize;
+};
+</script>
+</body>
+</html>
