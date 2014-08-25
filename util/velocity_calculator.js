@@ -41,6 +41,7 @@ function VelocityCalculator(bufferSize) {
     if (isNaN(result)) {
       return 0;
     }
+    console.log("VELOCITY IS " + result);
     return result;
   }
 };
