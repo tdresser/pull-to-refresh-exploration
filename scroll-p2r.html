@@ -82,19 +82,19 @@ function addFriction(x) {
   if (x < 0)
     return x;
   x = x / 800;
-  return 800 * x / (1 + x*0.8);
-}
-
-function overscrollOn() {
-  container.className = "overscrolling";
-  overscrolling = true;
-  window.requestAnimationFrame(updateOverscroll);
+  return 800 * x / (1 + x * 0.8);
 }
 
 function setHeaderOffset(y) {
   var transform = 'translate3d(0, ' + y + 'px, 0)';
   header.style.webkitTransform = transform;
   content.style.webkitTransform = transform;
+}
+
+function overscrollOn() {
+  container.className = "overscrolling";
+  overscrolling = true;
+  window.requestAnimationFrame(updateOverscroll);
 }
 
 function overscrollOff() {
@@ -132,9 +132,9 @@ function updateOverscroll() {
   }
 
   if ( t < 120)
-    t*=1.2;
+    t *= 1.2;
   else
-    t+= 120*1.2 - 120;
+    t += 120 * 1.2 - 120;
   setHeaderOffset(offset);
 }
 
