@@ -9,29 +9,18 @@
 * {
   margin:0px;
   padding:0px;
-}
-
-html, body {
   width:100%;
 }
 
 #header {
   background-color: lightgrey;
-  -moz-box-sizing: border-box;
-  box-sizing: border-box;
   height:800px;
   text-align:center;
   padding-top:750px;
-  width: 100%;
-}
-
-#content {
-  height:1500;
-  width:100%;
+  box-sizing: border-box;
 }
 
 #scrollable {
-  width:100%;
   position:absolute;
   height:2300px;
 }
@@ -56,53 +45,24 @@ body::-webkit-scrollbar { width: 0 !important }
   content: 'Release to refresh...';
 }
 
-/* Content styling */
-.row {
-  height: 50px;
-  width: 100%;
+#content {
+  background: linear-gradient(
+    to bottom,
+    #afa,
+    #afa 50%,
+    #8f8 50%,
+    #8f8
+  );
+  background-size: 100% 100px;
+  height:1500px;
 }
-.even {
-  background-color: lightblue;
-}
-.odd {
-  background-color: white;
-}
+
 </style>
 </head>
 <body>
   <div id="scrollable"></div>
   <div id="header"></div>
   <div id="content">
-    <div class='row odd'>1</div>
-    <div class='row even'>2</div>
-    <div class='row odd'>3</div>
-    <div class='row even'>4</div>
-    <div class='row odd'>5</div>
-    <div class='row even'>6</div>
-    <div class='row odd'>7</div>
-    <div class='row even'>8</div>
-    <div class='row odd'>9</div>
-    <div class='row even'>10</div>
-    <div class='row odd'>11</div>
-    <div class='row even'>12</div>
-    <div class='row odd'>13</div>
-    <div class='row even'>14</div>
-    <div class='row odd'>15</div>
-    <div class='row even'>16</div>
-    <div class='row odd'>17</div>
-    <div class='row even'>18</div>
-    <div class='row odd'>19</div>
-    <div class='row even'>20</div>
-    <div class='row odd'>21</div>
-    <div class='row even'>22</div>
-    <div class='row odd'>23</div>
-    <div class='row even'>24</div>
-    <div class='row odd'>25</div>
-    <div class='row even'>26</div>
-    <div class='row odd'>27</div>
-    <div class='row even'>28</div>
-    <div class='row odd'>29</div>
-    <div class='row even'>30</div>
   </div>
 <script>
 var headerSize = 800;
@@ -209,6 +169,7 @@ document.addEventListener("touchcancel", function(e) {
 window.onload = function(){
   container.scrollTop = headerSize;
 };
+
 </script>
 </body>
 </html>

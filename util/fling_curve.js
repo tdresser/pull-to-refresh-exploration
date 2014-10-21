@@ -9,8 +9,6 @@ function FlingCurve(initial_position, initial_velocity, initial_time) {
 
   initial_velocity = Math.abs(initial_velocity);
 
-  // Don't use |GestureConfiguration::fling_acceleration_curve_coefficients_|.
-
   // From src/content/public/common/renderer_preferences.cc
   var p = [-5707.62, 172, 3.7];
 
