@@ -22,12 +22,24 @@
 
 body::-webkit-scrollbar { width: 0 !important }
 
-#header::after {
-  content: 'Pull down to refresh...';
+#header p {
+  position:absolute;
 }
 
-#header.pulled::after {
-  content: 'Release to refresh...';
+#header.pulled #release {
+  opacity: 0.0001;
+}
+
+#header.pulled #pull {
+  opacity: 1;
+}
+
+#header #release {
+  opacity: 1;
+}
+
+#header #pull {
+  opacity: 0.0001;
 }
 
 #content {
@@ -45,7 +57,10 @@ body::-webkit-scrollbar { width: 0 !important }
 </style>
 </head>
 <body>
-  <div id="header"></div>
+  <div id="header">
+    <p id="pull">Pull to Refresh</p>
+    <p id="release">Release to Refresh</p>
+  </div>
   <div id="content">
   </div>
 <script>
@@ -127,9 +142,6 @@ function updateOverscroll() {
   } else {
     header.className = "";
   }
-
-//  if (fingersDown !=== 0)
-//    scrollNoFriction -= t;
 
   if ( t < 120)
     t *= 1.2;
