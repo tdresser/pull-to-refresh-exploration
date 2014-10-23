@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Pull to Refresh using Scroll events</title>
+  <meta name="viewport" content="width=device-width, user-scalable=no">
+
+<style>
+* {
+  margin:0px;
+  padding:0px;
+  width:100%;
+}
+
+#header {
+  height:800px;
+  background-color: lightgrey;
+  text-align:center;
+  padding-top:750px;
+  box-sizing: border-box;
+}
+
+body::-webkit-scrollbar { width: 0 !important }
+
+#header::after {
+  content: 'Pull down to refresh...';
+}
+
+#header.pulled::after {
+  content: 'Release to refresh...';
+}
+
+#content {
+  background: linear-gradient(
+    to bottom,
+    #afa,
+    #afa 50%,
+    #8f8 50%,
+    #8f8
+  );
+  background-size: 100% 100px;
+  height:1500px;
+}
+
+</style>
+</head>
+<body>
+  <div id="header"></div>
+  <div id="content">
+  </div>
+<script>
+var headerSize = 800;
+var overscrolling = false;
+
+var container = document.documentElement;
+
+// Hack for Chrome to get correct scrolling container.
+document.body.scrollTop = 1;
+if (document.body.scrollTop === 1) {
+  container = document.body;
+  document.body.scrollTop = 0;
+}
+
+var header = document.getElementById("header");
+var content = document.getElementById("content");
+var fingersDown = 0;
+
+var scrollNoFriction = null;
+var scrollWithFriction = null;
+
+// Used for fake (and terrible) physics.
+var t = 0.1;
+
+var lastOffsetPreFriction = 0;
+
+function addFriction(x) {
+  if (x < 0)
+    return x;
+  x = x / 800;
+  return 800 * x / (1 + x * 0.8);
+}
+
+function setHeaderOffset(y) {
+  container.scrollTop = headerSize - y;
+  scrollWithFriction = headerSize - y;
+  console.log("SET HEADER OFFSET TO " + scrollWithFriction);
+}
+
+function overscrollOn() {
+  overscrolling = true;
+  window.requestAnimationFrame(updateOverscroll);
+}
+
+function overscrollOff() {
+  overscrolling = false;
+  setHeaderOffset(0);
+  scrollNoFriction = headerSize;
+}
+
+function updateOverscroll() {
+//  console.log("ACTUAL " + scrollNoFriction);
+//  var scrollTop = container.scrollTop;
+  var scrollTop = scrollNoFriction;
+  if (!overscrolling || scrollTop >= headerSize)
+    return;
+
+  var offset = 0;
+  if (fingersDown === 0)
+    offset = 800 - scrollTop - t;
+  else
+    offset = 800 - scrollTop;
+  lastOffsetPreFriction = offset;
+  offset = addFriction(offset);
+
+  if (offset <= 0) {
+    t = 0.1;
+    setHeaderOffset(0);
+    scrollNoFriction = headerSize;
+    overscrollOff();
+    return;
+  } else {
+    window.requestAnimationFrame(updateOverscroll);
+  }
+
+  if (offset > 110 && fingersDown) {
+    header.className = "pulled";
+  } else {
+    header.className = "";
+  }
+
+//  if (fingersDown !=== 0)
+//    scrollNoFriction -= t;
+
+  if ( t < 120)
+    t *= 1.2;
+  else
+    t += 120 * 1.2 - 120;
+  setHeaderOffset(offset);
+}
+
+document.addEventListener("scroll", function(e) {
+  var scrollTop = container.scrollTop;
+  scrollNoFriction += scrollTop - scrollWithFriction;
+  console.log("DELTA " + (scrollTop - scrollWithFriction));
+  console.log("SCROLL WITH FRICTION " + scrollWithFriction);
+  console.log("SCROLL NO FRICTION " + scrollNoFriction);
+  scrollWithFriction = scrollTop;
+
+  if (!overscrolling && scrollTop < headerSize)
+    overscrollOn();
+  else if (overscrolling && scrollTop >= headerSize)
+    overscrollOff();
+});
+
+document.addEventListener("touchstart", function(e) {
+  fingersDown += e.changedTouches.length;
+  if (overscrolling) {
+    t = 0;
+    setHeaderOffset(lastOffsetPreFriction);
+  }
+});
+
+document.addEventListener("touchend", function(e) {
+  fingersDown -= e.changedTouches.length;
+  t = 0.1;
+});
+
+document.addEventListener("touchcancel", function(e) {
+  fingersDown -= e.changedTouches.length;
+  t = 0.1;
+});
+
+window.onload = function(){
+  setHeaderOffset(0);
+  scrollWithFriction = container.scrollTop;
+  scrollNoFriction = container.scrollTop;
+};
+</script>
+</body>
+</html>
