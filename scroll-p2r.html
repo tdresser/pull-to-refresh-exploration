@@ -68,7 +68,15 @@ body::-webkit-scrollbar { width: 0 !important }
 var headerSize = 800;
 var overscrolling = false;
 
-var container = document.body;
+var container = document.documentElement;
+
+// Hack for Chrome to get correct scrolling container.
+document.body.scrollTop = 10;
+if (document.body.scrollTop === 10) {
+  container = document.body;
+}
+document.body.scrollTop = 0;
+
 var header = document.getElementById("header");
 var content = document.getElementById("content");
 var fingersDown = 0;
@@ -148,7 +156,7 @@ document.addEventListener("scroll", function(e) {
 });
 
 document.addEventListener("touchstart", function(e) {
-  fingersDown++;
+  fingersDown += e.changedTouches.length;
   if (overscrolling) {
     t = 0;
     container.scrollTop = 800 - lastOffsetPreFriction;
@@ -157,12 +165,12 @@ document.addEventListener("touchstart", function(e) {
 });
 
 document.addEventListener("touchend", function(e) {
-  fingersDown--;
+  fingersDown -= e.changedTouches.length;
   t = 0.1;
 });
 
 document.addEventListener("touchcancel", function(e) {
-  fingersDown--;
+  fingersDown -= e.changedTouches.length;
   t = 0.1;
 });
 
