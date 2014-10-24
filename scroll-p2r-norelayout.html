@@ -82,7 +82,7 @@ var header = document.getElementById("header");
 var content = document.getElementById("content");
 var fingersDown = 0;
 
-var lastScrollPreFriction = null;
+var scrollNoFriction = null;
 var scrollNoFrictionOrPhysics = null;
 var lastScrollOffset = null;
 
@@ -123,7 +123,7 @@ function updateOverscroll() {
     offset = 800 - scrollTop - t;
   else
     offset = 800 - scrollTop;
-  lastScrollPreFriction = 800 - offset;
+  scrollNoFriction = 800 - offset;
   offset = addFriction(offset);
 
   if (offset <= 0) {
@@ -163,7 +163,7 @@ document.addEventListener("scroll", function(e) {
 document.addEventListener("touchstart", function(e) {
   fingersDown += e.changedTouches.length;
   if (overscrolling) {
-    scrollNoFrictionOrPhysics = lastScrollPreFriction;
+    scrollNoFrictionOrPhysics = scrollNoFriction;
     t = 0;
   }
 });
@@ -182,6 +182,7 @@ window.onload = function(){
   setHeaderOffset(0);
   lastScrollOffset = container.scrollTop;
   scrollNoFrictionOrPhysics = container.scrollTop;
+  scrollNoFriction = container.scrollTop;
 };
 </script>
 </body>
