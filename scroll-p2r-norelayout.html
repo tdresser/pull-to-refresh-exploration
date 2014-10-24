@@ -124,7 +124,7 @@ function updateOverscroll() {
     offset = 800 - scrollTop - t;
   else
     offset = 800 - scrollTop;
-  lastOffsetPreFriction = offset;
+  lastOffsetPreFriction = 800 - offset;
   offset = addFriction(offset);
 
   if (offset <= 0) {
@@ -166,7 +166,7 @@ document.addEventListener("scroll", function(e) {
 document.addEventListener("touchstart", function(e) {
   fingersDown += e.changedTouches.length;
   if (overscrolling) {
-    scrollNoFriction = 800 - lastOffsetPreFriction;
+    scrollNoFriction = lastOffsetPreFriction;
     t = 0;
   }
 });
