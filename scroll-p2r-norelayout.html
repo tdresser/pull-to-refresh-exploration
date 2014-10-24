@@ -115,8 +115,6 @@ function overscrollOff() {
 }
 
 function updateOverscroll() {
-//  console.log("ACTUAL " + scrollNoFriction);
-//  var scrollTop = container.scrollTop;
   var scrollTop = scrollNoFriction;
   if (!overscrolling || scrollTop >= headerSize)
     return;
@@ -155,9 +153,6 @@ function updateOverscroll() {
 document.addEventListener("scroll", function(e) {
   var scrollTop = container.scrollTop;
   scrollNoFriction += scrollTop - scrollWithFriction;
-  console.log("DELTA " + (scrollTop - scrollWithFriction));
-  console.log("SCROLL WITH FRICTION " + scrollWithFriction);
-  console.log("SCROLL NO FRICTION " + scrollNoFriction);
   scrollWithFriction = scrollTop;
 
   if (!overscrolling && scrollTop < headerSize)
@@ -169,8 +164,12 @@ document.addEventListener("scroll", function(e) {
 document.addEventListener("touchstart", function(e) {
   fingersDown += e.changedTouches.length;
   if (overscrolling) {
+    console.log("SCROLL NO FRICTION " + scrollNoFriction);
+    scrollNoFriction = 800 - lastOffsetPreFriction;
+    console.log("SCROLL NO FRICTION " + scrollNoFriction);
+    console.log("SET TO " + (800 - lastOffsetPreFriction));
+    setHeaderOffset(800 - lastOffsetPreFriction);
     t = 0;
-//    setHeaderOffset();
   }
 });
 
