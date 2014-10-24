@@ -24,10 +24,12 @@ body::-webkit-scrollbar { width: 0 !important }
 
 #header p {
   position:absolute;
+  /* Prevent repainting when header text changes */
+  transform: translate3d(0, 0, 0);
 }
 
 #header.pulled #release {
-  opacity: 0.0001;
+  opacity: 0;
 }
 
 #header.pulled #pull {
@@ -39,7 +41,7 @@ body::-webkit-scrollbar { width: 0 !important }
 }
 
 #header #pull {
-  opacity: 0.0001;
+  opacity: 0;
 }
 
 #content {
@@ -144,9 +146,9 @@ function updateOverscroll() {
   }
 
   if ( t < 120)
-    t *= 1.2;
+    t *= 1.24;
   else
-    t += 120 * 1.2 - 120;
+    t += 120 * 1.24 - 120;
   setHeaderOffset(offset);
 }
 
@@ -168,7 +170,7 @@ document.addEventListener("touchstart", function(e) {
   fingersDown += e.changedTouches.length;
   if (overscrolling) {
     t = 0;
-    setHeaderOffset(lastOffsetPreFriction);
+//    setHeaderOffset();
   }
 });
 
