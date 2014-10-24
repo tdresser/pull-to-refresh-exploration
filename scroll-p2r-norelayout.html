@@ -100,7 +100,6 @@ function addFriction(x) {
 function setHeaderOffset(y) {
   container.scrollTop = headerSize - y;
   scrollWithFriction = headerSize - y;
-  console.log("SET HEADER OFFSET TO " + scrollWithFriction);
 }
 
 function overscrollOn() {
@@ -116,8 +115,9 @@ function overscrollOff() {
 
 function updateOverscroll() {
   var scrollTop = scrollNoFriction;
-  if (!overscrolling || scrollTop >= headerSize)
+  if (!overscrolling || scrollTop >= headerSize) {
     return;
+  }
 
   var offset = 0;
   if (fingersDown === 0)
@@ -152,6 +152,8 @@ function updateOverscroll() {
 
 document.addEventListener("scroll", function(e) {
   var scrollTop = container.scrollTop;
+  // Add the scroll delta to our measurement of what the scroll would be if
+  // we hadn't applied friction.
   scrollNoFriction += scrollTop - scrollWithFriction;
   scrollWithFriction = scrollTop;
 
@@ -164,11 +166,7 @@ document.addEventListener("scroll", function(e) {
 document.addEventListener("touchstart", function(e) {
   fingersDown += e.changedTouches.length;
   if (overscrolling) {
-    console.log("SCROLL NO FRICTION " + scrollNoFriction);
     scrollNoFriction = 800 - lastOffsetPreFriction;
-    console.log("SCROLL NO FRICTION " + scrollNoFriction);
-    console.log("SET TO " + (800 - lastOffsetPreFriction));
-    setHeaderOffset(800 - lastOffsetPreFriction);
     t = 0;
   }
 });
