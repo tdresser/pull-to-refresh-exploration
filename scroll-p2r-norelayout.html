@@ -127,8 +127,6 @@ function updateOverscroll() {
 
   if (offset <= 0) {
     t = 0.1;
-    setHeaderOffset(0);
-    scrollNoFrictionOrPhysics = headerSize;
     overscrollOff();
     return;
   } else {
