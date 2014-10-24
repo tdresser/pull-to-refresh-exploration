@@ -82,8 +82,9 @@ var header = document.getElementById("header");
 var content = document.getElementById("content");
 var fingersDown = 0;
 
+var lastScrollPreFriction = null;
 var scrollNoFrictionOrPhysics = null;
-var scrollNoPhysics = null;
+var lastScrollOffset = null;
 
 // Used for fake (and terrible) physics.
 var t = 0.1;
@@ -97,7 +98,7 @@ function addFriction(x) {
 
 function setHeaderOffset(y) {
   container.scrollTop = headerSize - y;
-  scrollNoPhysics = headerSize - y;
+  lastScrollOffset = headerSize - y;
 }
 
 function overscrollOn() {
@@ -122,7 +123,7 @@ function updateOverscroll() {
     offset = 800 - scrollTop - t;
   else
     offset = 800 - scrollTop;
-  lastOffsetPreFriction = 800 - offset;
+  lastScrollPreFriction = 800 - offset;
   offset = addFriction(offset);
 
   if (offset <= 0) {
@@ -150,8 +151,8 @@ document.addEventListener("scroll", function(e) {
   var scrollTop = container.scrollTop;
   // Add the scroll delta to our measurement of what the scroll would be if
   // we hadn't applied friction.
-  scrollNoFrictionOrPhysics += scrollTop - scrollNoPhysics;
-  scrollNoPhysics = scrollTop;
+  scrollNoFrictionOrPhysics += scrollTop - lastScrollOffset;
+  lastScrollOffset = scrollTop;
 
   if (!overscrolling && scrollTop < headerSize)
     overscrollOn();
@@ -162,7 +163,7 @@ document.addEventListener("scroll", function(e) {
 document.addEventListener("touchstart", function(e) {
   fingersDown += e.changedTouches.length;
   if (overscrolling) {
-    scrollNoFrictionOrPhysics = container.scrollTop;
+    scrollNoFrictionOrPhysics = lastScrollPreFriction;
     t = 0;
   }
 });
@@ -179,7 +180,7 @@ document.addEventListener("touchcancel", function(e) {
 
 window.onload = function(){
   setHeaderOffset(0);
-  scrollNoPhysics = container.scrollTop;
+  lastScrollOffset = container.scrollTop;
   scrollNoFrictionOrPhysics = container.scrollTop;
 };
 </script>
